@@ -1,10 +1,24 @@
 import React from 'react'
 import Spline from '@splinetool/react-spline'
-import { motion } from 'framer-motion'
-import { Menu, X, ChevronRight, ShieldCheck, Workflow, Gauge, LineChart, Settings, Rocket, CalendarClock, Handshake, Layers, Code2 } from 'lucide-react'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { Menu, X, ChevronRight, ShieldCheck, Workflow, Gauge, LineChart, Settings, Rocket, CalendarClock, Handshake, Layers, Code2, Sparkles, Star } from 'lucide-react'
 
 function App() {
   const [open, setOpen] = React.useState(false)
+
+  // subtle parallax for hero background
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const rx = useTransform(my, [-50, 50], [8, -8])
+  const ry = useTransform(mx, [-50, 50], [-8, 8])
+
+  const handleMouseMove = (e) => {
+    const { innerWidth, innerHeight } = window
+    const x = e.clientX - innerWidth / 2
+    const y = e.clientY - innerHeight / 2
+    mx.set(Math.max(-50, Math.min(50, (x / innerWidth) * 200)))
+    my.set(Math.max(-50, Math.min(50, (y / innerHeight) * 200)))
+  }
 
   const navLinks = [
     { label: 'Services', href: '#services' },
@@ -64,11 +78,30 @@ function App() {
     },
   ]
 
+  const testimonials = [
+    {
+      quote: 'They turned chaos into clarity. Adoption across ops hit record highs within two weeks.',
+      name: 'COO, Series B Logistics',
+    },
+    {
+      quote: 'The most loved internal tool we’ve ever shipped. Real impact, fast.',
+      name: 'VP Engineering, Fintech',
+    },
+    {
+      quote: 'Transparent sprints and stunning craft. Our teams now move in sync.',
+      name: 'Head of People, Global SaaS',
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-[#05060A] text-white">
-      {/* Top gradient glow */}
-      <div className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(50%_40%_at_50%_0%,black,transparent)]">
-        <div className="absolute inset-x-0 top-0 h-[60vh] bg-gradient-to-b from-indigo-500/40 via-fuchsia-500/20 to-transparent blur-3xl opacity-60" />
+    <div className="min-h-screen bg-[#05060A] text-white" onMouseMove={handleMouseMove}>
+      {/* Ambient background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-24 left-1/2 h-[60vh] w-[80vw] -translate-x-1/2 rounded-[80px] blur-3xl opacity-70" style={{ background: 'radial-gradient(600px 300px at 50% 30%, rgba(129, 140, 248, .25), transparent), radial-gradient(500px 280px at 30% 60%, rgba(236, 72, 153, .20), transparent)' }} />
+        <motion.div style={{ rotateX: rx, rotateY: ry }} className="absolute inset-0 opacity-[0.06]" aria-hidden>
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,.15)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        </motion.div>
+        <div className="absolute inset-0 mix-blend-overlay opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\' viewBox=\'0 0 300 300\'><filter id=\'n\'><feTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'2\' stitchTiles=\'stitch\' /></filter><rect width=\'300\' height=\'300\' filter=\'url(%23n)\' opacity=\'0.5\'/></svg>")' }} />
       </div>
 
       {/* Navigation */}
@@ -106,7 +139,7 @@ function App() {
         )}
       </header>
 
-      {/* Hero Section with Spline */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 pt-8 pb-20 md:pb-28 grid md:grid-cols-2 gap-10 items-center">
           <div>
@@ -115,13 +148,14 @@ function App() {
                 <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Internal Management Software Experts
               </div>
               <h1 className="text-4xl md:text-6xl font-semibold leading-tight tracking-tight">
-                Launch the systems your teams actually love using
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white to-fuchsia-300">Launch the systems</span> your teams actually love using
               </h1>
               <p className="mt-5 text-white/70 text-lg max-w-xl">
                 We design and build bespoke platforms that align operations, unlock data, and scale with your business. From idea to adoption — fast.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a href="#contact" className="inline-flex items-center gap-2 rounded-full bg-white text-black px-5 py-3 font-medium hover:bg-white/90 transition">
+                <a href="#contact" className="group inline-flex items-center gap-2 rounded-full bg-white text-black px-5 py-3 font-medium hover:bg-white/95 transition relative overflow-hidden">
+                  <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(60px_60px_at_var(--x,50%)_50%,rgba(0,0,0,.08),transparent_60%)]" />
                   Book a discovery call <ChevronRight className="w-4 h-4" />
                 </a>
                 <a href="#work" className="inline-flex items-center gap-2 rounded-full bg-transparent border border-white/20 px-5 py-3 font-medium text-white/80 hover:text-white hover:border-white/40 transition">
@@ -140,14 +174,31 @@ function App() {
               scene="https://prod.spline.design/VJLoxp84lCdVfdZu/scene.splinecode"
               style={{ width: '100%', height: '100%' }}
             />
-            {/* soft gradient edge so the 3D sits nicely */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#05060A] via-transparent to-transparent opacity-60" />
+          </div>
+        </div>
+
+        {/* credibility marquee */}
+        <div className="relative">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3 overflow-hidden">
+              <div className="relative flex gap-10 text-white/60 text-xs whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+                <motion.div className="flex gap-10 py-1" animate={{ x: ['0%', '-50%'] }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}>
+                  {['Logistics', 'Fintech', 'SaaS', 'Healthcare', 'Manufacturing', 'Energy'].map((l) => (
+                    <span key={l} className="inline-flex items-center gap-2"><Sparkles className="w-3 h-3" />{l}</span>
+                  ))}
+                  {['Logistics', 'Fintech', 'SaaS', 'Healthcare', 'Manufacturing', 'Energy'].map((l) => (
+                    <span key={l+2} className="inline-flex items-center gap-2"><Sparkles className="w-3 h-3" />{l}</span>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section id="services" className="relative py-16 md:py-24">
+      {/* Bento Services */}
+      <section id="services" className="relative py-18 md:py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mb-10 md:mb-14 flex items-end justify-between">
             <div>
@@ -157,11 +208,11 @@ function App() {
             <a href="#contact" className="hidden md:inline-flex items-center gap-2 text-sm rounded-full bg-white/10 border border-white/10 px-4 py-2 hover:bg-white/15">Discuss your stack <ChevronRight className="w-4 h-4" /></a>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid md:grid-cols-3 grid-rows-2 gap-4 md:gap-6 auto-rows-[minmax(0,1fr)]">
             {services.map((s, i) => (
               <motion.div
                 key={s.title}
-                className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur overflow-hidden"
+                className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur overflow-hidden hover:border-white/20 transition"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
@@ -176,6 +227,7 @@ function App() {
                 <div className="mt-4 inline-flex items-center gap-1 text-white/80 text-sm">
                   Learn more <ChevronRight className="w-4 h-4" />
                 </div>
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(240px_120px_at_var(--mx,50%)_0%,rgba(255,255,255,.06),transparent)]" />
               </motion.div>
             ))}
           </div>
@@ -194,13 +246,13 @@ function App() {
             {work.map((w, i) => (
               <motion.div
                 key={w.title}
-                className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-6 overflow-hidden"
+                className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-6 overflow-hidden hover:border-white/20 transition"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
               >
-                <div className="absolute inset-0 opacity-[0.07] bg-[radial-gradient(1200px_400px_at_-20%_-20%,#8B5CF6,transparent),radial-gradient(800px_300px_at_120%_120%,#EC4899,transparent)]" />
+                <div className="absolute inset-0 opacity-[0.08] bg-[radial-gradient(1200px_400px_at_-20%_-20%,#8B5CF6,transparent),radial-gradient(800px_300px_at_120%_120%,#EC4899,transparent)]" />
                 <div className="relative">
                   <span className="text-[11px] tracking-wide uppercase text-white/60">{w.tag}</span>
                   <h3 className="text-xl font-semibold mt-1">{w.title}</h3>
@@ -211,6 +263,24 @@ function App() {
                   </ul>
                 </div>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="relative py-12 md:py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-8 md:mb-12 flex items-center gap-3">
+            <Star className="w-5 h-5 text-yellow-300" />
+            <h3 className="text-xl md:text-2xl font-semibold">Teams love using what we ship</h3>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+            {testimonials.map((t, i) => (
+              <motion.blockquote key={t.name} className="rounded-2xl border border-white/10 bg-white/5 p-6" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+                <p className="text-white/80">“{t.quote}”</p>
+                <footer className="mt-4 text-sm text-white/60">— {t.name}</footer>
+              </motion.blockquote>
             ))}
           </div>
         </div>
@@ -232,7 +302,7 @@ function App() {
             }, {
               icon: <Rocket className="w-5 h-5" />, title: 'Enable & Scale', desc: 'Training, documentation, and ongoing enhancements as you grow.'
             }].map((step, i) => (
-              <motion.div key={step.title} className="rounded-2xl border border-white/10 bg-white/5 p-6" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+              <motion.div key={step.title} className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-white/20 transition" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
                 <div className="h-10 w-10 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white mb-4">{step.icon}</div>
                 <h3 className="font-semibold">{step.title}</h3>
                 <p className="mt-2 text-sm text-white/70 leading-relaxed">{step.desc}</p>
